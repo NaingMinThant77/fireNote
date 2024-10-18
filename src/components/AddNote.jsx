@@ -5,6 +5,10 @@ const AddNote = ({ getNotes }) => {
 
     const addNote = async (e) => {
         e.preventDefault();
+        if (note.trim().length === 0 ) {
+            alert("Please enter a valid note.")
+            return;
+        }
         try {                     //default - get method                  //anything.json
             await fetch("https://firenote-bdeab-default-rtdb.firebaseio.com/notes.json", {
                 method: "POST",
