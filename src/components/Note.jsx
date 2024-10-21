@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DeleteIcon from '../svgs/DeleteIcon';
 import UpdateIcon from '../svgs/UpdateIcon';
+import axios from 'axios';
 
 const Note = ({ note, getNotes}) => {
   const { key: id, note: noteText, isChecked: initialIsChecked } = note;
@@ -14,32 +15,38 @@ const Note = ({ note, getNotes}) => {
 
   const deleteNote = async () => {
     try {
-      const response = await fetch(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete this note.');
-      }
+      // const response = await fetch(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
+      //   method: 'DELETE',
+      // });
+      // if (!response.ok) {
+      //   throw new Error('Failed to delete this note.');
+      // }
+      await axios.delete(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`);
       getNotes();
     } catch (err) {
-      alert(err.message);
+      // alert(err.message);
+      alert('Failed to delete this note.');
     }
   };
 
   const updateNote = async () => {
     try {
-      const response = await fetch(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
-        method: 'PUT',
-        body: JSON.stringify({ note: updatedText, isChecked }), // Save updated text and isChecked status
-        headers: { 'Content-Type': 'application/json' },
+      // const response = await fetch(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
+      //   method: 'PUT',
+      //   body: JSON.stringify({ note: updatedText, isChecked }), // Save updated text and isChecked status
+      //   headers: { 'Content-Type': 'application/json' },
+      // });
+      // if (!response.ok) {
+      //   throw new Error('Failed to update this note.');
+      // }
+      await axios.put(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
+        note: updatedText,
+        isChecked,
       });
-      if (!response.ok) {
-        throw new Error('Failed to update this note.');
-      }
       setEditMode(false);
       getNotes();
     } catch (err) {
-      alert(err.message);
+      alert('Failed to update this note.');
     }
   };
 
@@ -47,10 +54,13 @@ const Note = ({ note, getNotes}) => {
     const updatedChecked = !isChecked;
     setIsChecked(updatedChecked);
     try {
-      await fetch(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
-        method: 'PATCH',
-        body: JSON.stringify({ isChecked: updatedChecked, note: updateNote }),
-        headers: { 'Content-Type': 'application/json' },
+      // await fetch(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
+      //   method: 'PATCH',
+      //   body: JSON.stringify({ isChecked: updatedChecked }),
+      //   headers: { 'Content-Type': 'application/json' },
+      // });
+      await axios.patch(`https://firenote-bdeab-default-rtdb.firebaseio.com/notes/${id}.json`, {
+        isChecked: updatedChecked,
       });
       getNotes(); // Refresh notes after update
     } catch (err) {

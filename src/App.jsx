@@ -4,6 +4,7 @@ import Note from './components/Note';
 import Navbar from './components/Navbar';
 import Intro from './components/Intro';
 import FilterDiv from './components/FilterDiv';
+import axios from 'axios';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -16,11 +17,13 @@ const App = () => {
   const getNotes = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://firenote-bdeab-default-rtdb.firebaseio.com/notes.json");
-      if (!response.ok) {
-        throw new Error("Cannot connect to Firebase.");
-      }
-      const notesData = await response.json();
+      // const response = await fetch("https://firenote-bdeab-default-rtdb.firebaseio.com/notes.json");
+      // if (!response.ok) {
+      //   throw new Error("Cannot connect to Firebase.");
+      // }
+      // const notesData = await response.json();
+      const response = await axios.get("https://firenote-bdeab-default-rtdb.firebaseio.com/notes.json");
+      const notesData = await response.data;
       // console.log('Fetched notes data:', notesData); // Debug log
 
       // Check if notesData is valid
@@ -33,16 +36,17 @@ const App = () => {
       setNotes(modifiedNotes);
     } catch (err) {
       // console.error('Error fetching notes:', err); // Debug log
-      setError(err.message);
+      setError("Cannot connect to Firebase.");
     }
     setLoading(false);
   };
 
   const clearAllNotes = async () => {
     try {
-      await fetch("https://firenote-bdeab-default-rtdb.firebaseio.com/notes.json", {
-        method: "DELETE"
-      });
+      // await fetch("https://firenote-bdeab-default-rtdb.firebaseio.com/notes.json", {
+      //   method: "DELETE"
+      // });
+      await axios.delete("https://firenote-bdeab-default-rtdb.firebaseio.com/notes.json");
       setNotes([]); // Clear local notes state
     } catch (err) {
       alert("Failed to clear all notes");
